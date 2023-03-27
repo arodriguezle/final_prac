@@ -1,0 +1,27 @@
+apiVersion: batch/v1
+kind: CronJob
+metadata:
+  name: influxdb-backup
+spec:
+  schedule: "0 0 * * *"
+  jobTemplate:
+    spec:
+      template:
+        spec:
+          containers:
+          - name: influxdb-backup
+            image: busybox
+            command: ["/bin/sh", "-c", "tar -czvf /backup/backup.tar.gz /var/lib/influxdb"]
+            volumeMounts:
+            - name: influxdb-storage
+              mountPath: /var/lib/influxdb
+            - name: backup-storage
+              mountPath: /backup
+          restartPolicy: OnFailure
+          volumes:
+          - name: influxdb-storage
+            persistentVolumeClaim:
+              claimName: influxdb-pvc
+          - name: backup-storage
+            persistentVolumeClaim:
+              claimName: backup-pvc

@@ -1,0 +1,16 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: tomcat-influxdb-service
+spec:
+  selector:
+    app: tomcat-influxdb
+  ports:
+  - name: tomcat
+    protocol: TCP
+    port: 8080
+    targetPort: 8080
+  - name: influxdb
+    protocol: TCP
+    port: 8086
+    targetPort: 8086
